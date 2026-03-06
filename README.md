@@ -170,7 +170,6 @@ curl -X POST http://localhost:8080/api/productos \
 |-----|-------------|
 | `GET /actuator/health` | Estado de salud de la aplicación |
 | `GET /actuator/info` | Información de la aplicación |
-| `GET /actuator/metrics` | Métricas del sistema |
 
 ### Consola H2 (Base de datos)
 
@@ -346,14 +345,19 @@ Spring Actuator expone endpoints HTTP para monitorear tu aplicación en producci
 ```
 GET /actuator/health   → {"status": "UP"}
 GET /actuator/info     → {"app": {"name": "Curso Spring Boot", ...}}
-GET /actuator/metrics  → lista de métricas disponibles
 ```
 
 **Configuración en `application.properties`:**
 ```properties
-management.endpoints.web.exposure.include=health,info,metrics
+# Expone solo salud e información (los más seguros)
+management.endpoints.web.exposure.include=health,info
 management.endpoint.health.show-details=always
 ```
+
+> ⚠️ **Nota de seguridad:** Nunca expongas `*` (todos los endpoints) en producción.  
+> Endpoints como `env`, `heapdump` o `beans` pueden filtrar información sensible.  
+> En producción, protege los endpoints con **Spring Security**.
+
 
 ---
 
@@ -473,6 +477,16 @@ Los siguientes ejercicios están ordenados por dificultad para ayudarte a consol
 
 **Sebastian Gomez** – [@seagomezar](https://github.com/seagomezar)  
 Universidad EAFIT · Curso de Arquitectura de Software
+
+---
+
+## ⚠️ Nota de seguridad (para el instructor)
+
+Este proyecto está pensado para **aprendizaje local** y **no debe desplegarse en producción sin ajustes de seguridad**:
+
+- La consola H2 (`/h2-console`) está habilitada — desactívala en producción.
+- Los endpoints de Actuator están expuestos sin autenticación — en producción, protégelos con [Spring Security](https://spring.io/projects/spring-security).
+- La base de datos H2 en memoria no persiste datos al reiniciar — usa PostgreSQL o MySQL en producción.
 
 ---
 
